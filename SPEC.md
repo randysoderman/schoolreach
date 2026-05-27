@@ -6,7 +6,7 @@ This is the living build spec. Update the Status section at the end of every wor
 
 ## Status
 
-**Current step**: Steps 1–7 complete. Scrape pipeline live and validated against real schools (Pitt: ~180 coaches across all sports, including email pattern guesses). Cost-optimized via Gemini Flash + markdown trim + content-hash cache. Awaiting decision on Step 8 (Campaigns).
+**Current step**: Steps 1–7 complete + cleanup pass (2026-05-27). Scrape pipeline live and validated against real schools (Pitt: ~180 coaches across all sports, including email pattern guesses). Cost-optimized via Gemini Flash + markdown trim + content-hash cache. Multi-select filters + canonicalized conferences/divisions shipped. Repo pushed to https://github.com/randysoderman/schoolreach. Awaiting decision on Step 8 (Campaigns).
 
 **Completed (high-level)**:
 - ✅ **Step 1 — Bootstrap.** Next.js 14.2.35 + TS strict + Tailwind + shadcn/ui scaffold + Supabase clients + Drizzle. `.env.local` configured with Supabase URL, publishable + secret keys, `DATABASE_URL`.
@@ -15,7 +15,8 @@ This is the living build spec. Update the Status section at the end of every wor
 - ✅ **Step 4 — Schools + People pages.** Read/edit only. List filters, pagination, edit form with Zod validation, verified toggle.
 - ✅ **Step 5 — Inngest setup.** Shared client, hello-world function, `/api/inngest` route. Inngest CLI installed locally (`--no-save`).
 - ✅ **Step 6 — Discovery flow.** `/schools/discover` UI + `discovery/run` Inngest function. Dry-run + real-insert. Idempotent on `nces_id`.
-- ✅ **Cleanup pass.** Extracted shared `StatusPill`, `FilterSelect`, `Pager`, `lib/pagination.ts`, `isUuid()`. Removed all known duplicates.
+- ✅ **Cleanup pass.** Extracted shared `StatusPill`, `MultiSelect`, `Pager`, `lib/pagination.ts`, `isUuid()`. Removed all known duplicates. (Original `FilterSelect` superseded by `MultiSelect` and deleted 2026-05-27.)
+- ✅ **Refactor + docs pass (2026-05-27).** Deleted unused `components/ui/filter-select.tsx`. Added `TOUCHPOINTS.md` (helper → downstream consumers map). Refreshed `CLAUDE.md` with session-continuity guidance + standing user preferences.
 - ✅ **Step 7 — Single-school scrape pipeline (production-quality)**. Five logical phases:
   1. `find_website` — Brave Search if no URL on file.
   2. `find_directory` — Firecrawl scrape of homepage + Claude **Sonnet** identifies staff_directory_url + athletics_url + extracts conference/division (e.g. ACC, NCAA Division I).

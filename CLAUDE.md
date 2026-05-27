@@ -1,6 +1,11 @@
 # CLAUDE.md
 
-This file is read by Claude Code at the start of every session. It contains the durable rules and conventions for the SchoolReach project. The full build plan and current status live in `SPEC.md` — read that file too.
+This file is read by Claude Code at the start of every session. It contains the durable rules and conventions for the SchoolReach project.
+
+**Read these three in order before doing anything:**
+1. `CLAUDE.md` (this file) — rules + conventions
+2. `SPEC.md` — schema, build plan, current status
+3. `TOUCHPOINTS.md` — helper → downstream map (which files feel a change)
 
 ---
 
@@ -49,7 +54,7 @@ SchoolReach is a Next.js app for discovering schools by state, scraping coach an
   /ui                         # shadcn-style primitives
     button.tsx                # CVA-based, no Radix
     input.tsx
-    filter-select.tsx         # plain HTML <select> wrapper for list filters
+    multi-select.tsx          # comma-CSV dropdown filter (used by every list page)
     status-pill.tsx           # colored status badge
     pager.tsx                 # numbered pagination jumper (1 … 5 6 7 … 20)
 
@@ -67,6 +72,7 @@ SchoolReach is a Next.js app for discovering schools by state, scraping coach an
   levels.ts                   # LEVELS + LEVEL_LABELS + isCollegeLike
   sports.ts                   # SPORTS + COACH_ROLES + teamGenderOptions/Label
   social.ts                   # SOCIAL_PLATFORMS + normalize/entries helpers
+  conferences.ts              # DIVISIONS + CONFERENCES + canonicalizeDivision
   /db                         # Drizzle schema + client
   /supabase                   # server + browser + middleware clients
   /discovery                  # Urban Institute API client (CCD + IPEDS)
@@ -179,5 +185,51 @@ When something changes, update `SPEC.md` so the next session has accurate contex
 
 1. Read this file (CLAUDE.md).
 2. Read SPEC.md, especially the Status section.
-3. Confirm what we're working on next.
-4. Begin work, stopping after the current step finishes.
+3. Read TOUCHPOINTS.md if you'll be editing anything in `/lib`.
+4. Confirm what we're working on next.
+5. Begin work, stopping after the current step finishes.
+
+## Session continuity — survive disconnects
+
+Anything you'd want a fresh-context Claude to know lives in one of these:
+
+- **Architecture / conventions** → CLAUDE.md (this file)
+- **Build status / schema / next step** → SPEC.md > Status
+- **Helper → downstream consumers** → TOUCHPOINTS.md
+- **Cross-session preferences + user profile** → auto-memory (off-repo, lives
+  in `~/.claude/projects/.../memory/`; survives between sessions but NOT
+  between machines — rebuild on a new machine)
+
+If you make a decision that future-you would need to know (e.g. "we picked
+Gemini Flash over Haiku because rate limit"), write it into SPEC.md's Status
+section **in the same change**, not a separate doc. Don't create new
+session-handoff files.
+
+## Standing user preferences (from accumulated feedback)
+
+These are stable; treat as defaults unless the user says otherwise in-session.
+
+- **Proceed without asking.** Keep building. Only stop when you need user
+  input that you can't infer.
+- **No git push without explicit go-ahead.** Local commits are fine.
+- **Paste full contents inline.** When showing SQL, config, or commands, put
+  the actual content in a code block — don't reference a file path.
+- **Give clickable URLs for any manual step.** Full https:// links.
+- **For UI changes, actually test in browser.** Typecheck passing isn't
+  "done." If you can't test, say so explicitly.
+- **User is non-technical.** Explain decisions in plain language. Don't
+  assume familiarity with TypeScript, SQL, or React internals.
+
+## What NOT to put in CLAUDE.md / SPEC.md / TOUCHPOINTS.md
+
+Keep these files lean. Out-of-band:
+
+- Per-task work logs ("today I refactored X") — that's git history
+- Detailed code snippets — that's the code
+- Step-by-step debug recipes — that's the commit message
+- One-shot script invocations — that's the terminal history
+- Anything that will rot in a week (PR numbers, ticket links, current cursor
+  state, "next we'll try…")
+
+If you find yourself writing a section that's mostly past tense, it probably
+doesn't belong here.
